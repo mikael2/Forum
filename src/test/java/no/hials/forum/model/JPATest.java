@@ -15,13 +15,13 @@ import org.junit.BeforeClass;
  *
  * @author Mikael
  */
-public class MessageTest {
+public class JPATest {
     private static final String PU_NAME = "FORUM";
     
     static EntityManagerFactory factory;
     static EntityManager em;
     
-    public MessageTest() {
+    public JPATest() {
     }
 
     @BeforeClass
@@ -51,14 +51,34 @@ public class MessageTest {
         Message master = new Message(user, "Master");
         master.addReply(new Message(user,"Sub"));
         em.persist(master);
+        
+        Article articleA = new Article("ArticleA");
+        Article articleB = new Article("ArticleB");
+        Article articleC = new Article("ArticleC");
+        Article articleD = new Article("ArticleD");
+        em.persist(articleA);
+        em.persist(articleB);
+        em.persist(articleC);
+        em.persist(articleD);
+        
+        
+        ArticleList listA = new ArticleList("Fun stuff");
+        listA.addArticle(articleA);
+        listA.addArticle(articleB);
+        em.persist(listA);
+        
+        ArticleList listB = new ArticleList("Fun stuff");
+        listB.addArticle(articleA);
+        listB.addArticle(articleB);
+        listB.addArticle(articleC);
+        listB.addArticle(articleD);
+        em.persist(listB);
+        
         tx.commit();
     }
     
-    /**
-     * Test of getId method, of class Message.
-     */
     @Test
-    public void testGetId() {
+    public void testRemoveMessage() {
         List<Message> list = em.createQuery("select m from Message m where m.forumUser.name = 'Mikael'", Message.class).getResultList();
         assertEquals(5, list.size());
 
@@ -73,5 +93,24 @@ public class MessageTest {
     
         list = em.createQuery("select m from Message m where m.forumUser.name = 'Mikael'", Message.class).getResultList();
         assertEquals(4, list.size());
+    }
+
+    @Test
+    public void testRemoveArticle() {
+        List<Article> list = em.createQuery("select a from Article a", Article.class).getResultList();
+        assertEquals(4, list.size());
+
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+
+        Article articleA = em.createQuery("select a from Article a where a.name = 'ArticleA'", Article.class).getSingleResult();
+        Article articleB = em.createQuery("select a from Article a where a.name = 'ArticleB'", Article.class).getSingleResult();
+        em.remove(articleA);
+        em.remove(articleB);
+
+        tx.commit();
+    
+        list = em.createQuery("select a from Article a", Article.class).getResultList();
+        assertEquals(2, list.size());
     }
 }

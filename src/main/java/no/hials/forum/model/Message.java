@@ -9,10 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
-import org.eclipse.persistence.annotations.PrivateOwned;
 
 /**
  *
@@ -28,14 +28,17 @@ public class Message implements Serializable {
     @Temporal(javax.persistence.TemporalType.DATE)
     Date postTime;
     
-    @ManyToOne
+    @ManyToOne(optional = false)
     ForumUser forumUser;
 
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    List<Message> replies = new ArrayList<>();
     
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name="PARENT_ID")
+    List<Message> replies = new ArrayList<>();
+
+    /*
     @ManyToOne
-    Message parent;
+    Message parent;*/
     
     
     public Message() {
@@ -71,18 +74,18 @@ public class Message implements Serializable {
         this.forumUser = forumUser;
     }
 
-    public Message getParent() {
+    /**'public Message getParent() {
         return parent;
     }
 
     public void setParent(Message parent) {
         this.parent = parent;
-    }
+    }*/
     
     
     
     public void addReply(Message message) {
-        message.setParent(this);
+        //message.setParent(this);
         getReplies().add(message);
     }
     

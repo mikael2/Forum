@@ -4,6 +4,8 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>no.hials.forum.model.ForumUser</class>
     <class>no.hials.forum.model.Message</class>
+    <class>no.hials.forum.model.ArticleList</class>
+    <class>no.hials.forum.model.Article</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="eclipselink.logging.level" value="FINE"/>
@@ -12,7 +14,6 @@
       <property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:ForumDB;create=true"/>
       <property name="javax.persistence.jdbc.user" value=""/>
       <property name="javax.persistence.jdbc.password" value=""/>
-      <property name="eclipselink.logging.level" value="INFO"/>
       <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
     </properties>
   </persistence-unit>
